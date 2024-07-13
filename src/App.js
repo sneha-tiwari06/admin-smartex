@@ -3,11 +3,9 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Write from "./pages/add-blogs";
 import Home from "./pages/blogs";
-// import Dashboard from "./components/Dashboard";
 import Single from "./pages/Single";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-import "./style.scss"
 import StarSpeaks from "./pages/star-speakers";
 import StarHome from "./pages/add-star-speakers";
 import Winners from "./pages/winners-gallery";
@@ -20,6 +18,7 @@ import Upcoming from "./pages/upcoming-events";
 import UpcomingHome from "./pages/add-upcoming-events";
 import Partners from "./pages/our-partners";
 import PartnersHome from "./pages/add-partners";
+import "./style.scss";
 
 const Layout = ({ children }) => {
   return (
@@ -37,7 +36,9 @@ function App() {
       <div className="app">
         <div className="container">
           <Routes>
-            <Route path="/" element={<Layout><Login /></Layout>} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/" element={<Layout><Home /></Layout>} />
             <Route path="/post/:id" element={<Layout><Single /></Layout>} />
             <Route path="/blogs" element={<Layout><Home /></Layout>} />
             <Route path="/add-blogs" element={<Layout><Write /></Layout>} />
@@ -53,8 +54,6 @@ function App() {
             <Route path="/upcoming-events" element={<Layout><Upcoming /></Layout>} />
             <Route path="/our-partners" element={<Layout><Partners /></Layout>} />
             <Route path="/add-partners" element={<Layout><PartnersHome /></Layout>} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/login" element={<Login />} />
           </Routes>
         </div>
       </div>
