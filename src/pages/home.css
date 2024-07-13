@@ -1,0 +1,93 @@
+.home {
+  margin: 20px auto;
+  padding: 20px;
+  max-width: 1000px;
+}
+
+.posts {
+  margin-top: 20px;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  margin: 20px 0;
+}
+
+thead {
+  background-color: #f4f4f4;
+}
+
+th, td {
+  padding: 15px 20px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+th {
+  font-weight: bold;
+  background-color: #f4f4f4;
+}
+
+tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+tr:hover {
+  background-color: #f1f1f1;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+.img2 {
+  width: 50px;
+  height: auto;
+  border-radius: 5px;
+}
+
+.confirmation-popup {
+  position: absolute;
+  background: white;
+  border: 1px solid #ddd;
+  padding: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.confirmation-popup p {
+  margin: 0 0 10px;
+}
+
+.confirmation-popup div {
+  display: flex;
+  gap: 10px;
+}
+
+.read-more {
+  cursor: pointer;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 3px;
+  transition: background-color 0.3s;
+}
+
+.read-more:hover {
+  background-color: #0056b3;
+}
+
+.button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 3px;
+  transition: background-color 0.3s;
+}
+
+.button:hover {
+  background-color: #218838;
+}
