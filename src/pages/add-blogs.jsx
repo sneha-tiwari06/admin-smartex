@@ -4,6 +4,7 @@ import "react-quill/dist/quill.snow.css";
 import { useLocation, useNavigate } from "react-router-dom";
 import moment from "moment";
 import "../style.scss";
+import slugify from "slugify";
 import axiosInstance from "../utils/axiosInstance";
 
 const Write = () => {
@@ -143,6 +144,7 @@ const Write = () => {
       if (file) {
         imgUrl = await upload();
       }
+      const slug = slugify(title, { lower: true });
       try {
         state
           ? await axiosInstance.put(`${process.env.REACT_APP_API_URL}/posts/${state.id}`, {
@@ -156,6 +158,7 @@ const Write = () => {
             desc,
             cat,
             img: imgUrl,
+            slug
           })
           : await axiosInstance.post(`${process.env.REACT_APP_API_URL}/posts/`, {
             title,
@@ -169,6 +172,7 @@ const Write = () => {
             cat,
             img: imgUrl,
             date: moment(Date.now()).format("YYYY-MM-DD HH:mm:ss"),
+            slug
           });
         navigate("/blogs");
       } catch (err) {
