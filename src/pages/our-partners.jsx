@@ -108,10 +108,14 @@ const PartnersHome = () => {
                   </div>
                   <button
                     className="read-more"
-                    style={{ fontSize: "1rem" }}
+                    style={{
+                      fontSize: "1rem",
+                      backgroundColor: post.active ? "green" : "red",
+                      color: "white",  
+                    }}
                     onClick={() => handleToggleStatus(post)}
                   >
-                    {post.active ? 'Inactive' : 'Active'}
+                    {post.active ? 'Active' : 'Inactive'}
                   </button>
                 </td>
               </tr>

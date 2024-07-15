@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Link} from "react-router-dom";
-import "./home.css"; 
+import { Link } from "react-router-dom";
+import "./home.css";
 import "../style.scss";
 
 import useAuthRedirect from "../hooks/useAuthRedirect";
@@ -9,7 +9,7 @@ import axiosInstance from "../utils/axiosInstance";
 const Home = () => {
   useAuthRedirect();
   const [posts, setPosts] = useState([]);
-  const [postToDelete, setPostToDelete] = useState(null); 
+  const [postToDelete, setPostToDelete] = useState(null);
   // const cat = useLocation().search;
 
   useEffect(() => {
@@ -26,19 +26,19 @@ const Home = () => {
 
   const getText = (html) => {
     const doc = new DOMParser().parseFromString(html, "text/html");
-    return doc.body.textContent.slice(0, 30) +  "...";
+    return doc.body.textContent.slice(0, 30) + "...";
   };
 
-  
+
   const handleDeleteConfirmation = (post) => {
     setPostToDelete(post);
   };
 
- 
+
   const handleDelete = async () => {
     try {
       await axiosInstance.delete(`/posts/${postToDelete.id}`);
-     
+
       setPosts(posts.filter(post => post.id !== postToDelete.id));
       await handleFileDelete(postToDelete.img);
       setPostToDelete(null);
@@ -49,16 +49,16 @@ const Home = () => {
   const handleFileDelete = async (fileUrl) => {
     try {
       await axiosInstance.delete('/delete', {
-        data: { url: fileUrl } 
+        data: { url: fileUrl }
       });
     } catch (error) {
       console.error('Error deleting file', error);
     }
   };
-  
+
   const handleToggleStatus = async (post) => {
     try {
-      const updatedPost = { ...post, active: !post.active }; 
+      const updatedPost = { ...post, active: !post.active };
 
       await axiosInstance.put(`/posts/${post.id}`, { active: updatedPost.active });
       setPosts(posts.map(p => (p.id === post.id ? updatedPost : p)));
@@ -66,10 +66,10 @@ const Home = () => {
       console.error('Error toggling status', err);
     }
   };
-  
+
   return (
     <div className="home">
-      <h1 style={{justifyContent: "center", textAlign: "center"}}>Blogs</h1>
+      <h1 style={{ justifyContent: "center", textAlign: "center" }}>Blogs</h1>
       <span className="write">
         <Link className="link" to="/add-blogs">
           <button className="button">Add Blog</button>
@@ -86,8 +86,8 @@ const Home = () => {
               <th>Description</th>
               <th> Created At</th>
               <th> Blog By</th>
-              <th style={{textAlign: "center"}}>Actions</th>
-             
+              <th style={{ textAlign: "center" }}>Actions</th>
+
             </tr>
           </thead>
           <tbody>
@@ -95,7 +95,7 @@ const Home = () => {
               <tr key={index}>
                 <td>
                   <Link className="link" to={`/post/${post.id}`}>
-                    {index+1}
+                    {index + 1}
                   </Link>
                 </td>
                 <td>
@@ -105,7 +105,7 @@ const Home = () => {
                 </td>
                 <td>
                   <img className="img2" src={post.img} alt="" />
-                  
+
                 </td>
                 <td>{getText(post.desc)}</td>
                 <td>
@@ -122,7 +122,7 @@ const Home = () => {
                     Edit
                   </Link>
                   <div className="delete-wrapper">
-                  <button className="read-more" style={{ fontSize: "1rem" }} onClick={() => handleDeleteConfirmation(post)}>Delete</button>
+                    <button className="read-more" style={{ fontSize: "1rem" }} onClick={() => handleDeleteConfirmation(post)}>Delete</button>
                     {postToDelete && postToDelete.id === post.id && (
                       <div className="confirmation-popup">
                         <p>Are you sure you want to delete this post?</p>
@@ -133,12 +133,20 @@ const Home = () => {
                       </div>
                     )}
                   </div>
-                  <button className="read-more" style={{ fontSize: "1rem" }} onClick={() => handleToggleStatus(post)}>
-                    {post.active ? 'Inactive' : 'Active'}
+                  <button
+                    className="read-more"
+                    style={{
+                      fontSize: "1rem",
+                      backgroundColor: post.active ? "green" : "red",
+                      color: "white",  
+                    }}
+                    onClick={() => handleToggleStatus(post)}
+                  >
+                    {post.active ? 'Active' : 'Inactive'}
                   </button>
                 </td>
-                
-                
+
+
               </tr>
             ))}
           </tbody>

@@ -117,8 +117,16 @@ const WinnersHome = () => {
                       </div>
                     )}
                   </div>
-                  <button className="read-more" style={{ fontSize: "1rem" }} onClick={() => handleToggleStatus(post)}>
-                    {post.active ? 'Inactive' : 'Active'}
+                  <button
+                    className="read-more"
+                    style={{
+                      fontSize: "1rem",
+                      backgroundColor: post.active ? "green" : "red",
+                      color: "white", 
+                    }}
+                    onClick={() => handleToggleStatus(post)}
+                  >
+                    {post.active ? 'Active' : 'Inactive'}
                   </button>
                 </td>
                 

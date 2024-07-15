@@ -37,8 +37,8 @@ function App() {
         <div className="container">
           <Routes>
             <Route path="/register" element={<Register />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/" element={<Layout><Home /></Layout>} />
+            <Route path="/" element={<Login />} />
+            <Route path="/blogs" element={<Layout><Home /></Layout>} />
             <Route path="/post/:id" element={<Layout><Single /></Layout>} />
             <Route path="/blogs" element={<Layout><Home /></Layout>} />
             <Route path="/add-blogs" element={<Layout><Write /></Layout>} />
