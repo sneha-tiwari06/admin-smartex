@@ -150,7 +150,7 @@ const Winners = () => {
     if (!draft.alt_tag.trim()) {
       errors.alt_tag = "Please enter an alternate text.";
     }
-    if (!draft.img && !state?.img) {
+    if (!draft.img && !file && !state?.img) {
       errors.file = "Please select an image.";
     } else if (file) {
       const allowedExtensions = ["jpg", "jpeg", "png", "webp"];
