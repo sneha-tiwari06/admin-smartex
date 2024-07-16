@@ -3,7 +3,7 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Write from "./pages/add-blogs";
 import Home from "./pages/blogs";
-import Single from "./pages/Single";
+// import Single from "./pages/Single";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import StarSpeaks from "./pages/star-speakers";
@@ -40,7 +40,7 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/" element={<Login />} />
             <Route path="/blogs" element={<Layout><Home /></Layout>} />
-            <Route path="/post/:id" element={<Layout><Single /></Layout>} />
+            {/* <Route path="/post/:id" element={<Layout><Single /></Layout>} /> */}
             <Route path="/edit-draft/:id" element={<Layout><WinnersHome /></Layout>} />       
             <Route path="/blogs" element={<Layout><Home /></Layout>} />
             <Route path="/add-blogs" element={<Layout><Write /></Layout>} />

@@ -7,7 +7,7 @@ import axiosInstance from "../utils/axiosInstance";
 const Winners = () => {
   const state = useLocation().state;
   const navigate = useNavigate();
-  const baseURL = process.env.REACT_APP_BASE_URL;
+  // const baseURL = process.env.REACT_APP_BASE_URL;
 
   const [errors, setErrors] = useState({});
   const [file, setFile] = useState(null);
@@ -150,7 +150,7 @@ const Winners = () => {
     if (!draft.alt_tag.trim()) {
       errors.alt_tag = "Please enter an alternate text.";
     }
-    if (!file && !state?.img) {
+    if (!draft.img && !state?.img) {
       errors.file = "Please select an image.";
     } else if (file) {
       const allowedExtensions = ["jpg", "jpeg", "png", "webp"];
@@ -173,7 +173,6 @@ const Winners = () => {
         imgUrl = await upload();
       }
   
-      console.log("Publishing with image URL:", imgUrl);
   
       const payload = {
         title: draft.title,
@@ -189,7 +188,7 @@ const Winners = () => {
         await axiosInstance.post(`/winners/`, payload);
       }
   
-      navigate("/winners-gallery"); // Redirect to winners gallery
+      navigate("/winners-gallery"); 
     } catch (err) {
       console.error("Error publishing:", err);
       if (err.message === "Please select an image.") {

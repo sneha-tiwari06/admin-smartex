@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import moment from "moment";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import Swal from 'sweetalert2';
 import axiosInstance from "../utils/axiosInstance";
 
 const Partners = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const location = useLocation();
   const existingData = location.state || {};
   const baseURL = process.env.REACT_APP_API_URL;
@@ -199,7 +199,7 @@ const Partners = () => {
                 <img
                   key={index}
                   src={url}
-                  alt={`Existing image ${index + 1}`}
+                  alt={` ${index + 1}`}
                   style={{ height: "50px", width: "50px", margin: "5px" }}
                 />
               ))}
@@ -216,7 +216,7 @@ const Partners = () => {
                 <img
                   key={index}
                   src={url}
-                  alt={`New image ${index + 1}`}
+                  alt={`${index + 1}`}
                   style={{ height: "50px", width: "50px", margin: "5px" }}
                 />
               ))}
