@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import "./home.css"; 
 import axiosInstance from "../utils/axiosInstance";
+import Swal from 'sweetalert2';
 
 const WinnersHome = () => {
   const [posts, setPosts] = useState([]);
-  const [postToDelete, setPostToDelete] = useState(null); 
-  const cat = useLocation().search;
+  // const cat = useLocation().search;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -18,22 +18,44 @@ const WinnersHome = () => {
       }
     };
     fetchData();
-  }, [cat]);
+  }, []);
 
 
   const handleDeleteConfirmation = (post) => {
-    setPostToDelete(post);
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        await handleDelete(post);
+      }
+    });
   };
-
-  const handleDelete = async () => {
+  
+  const handleDelete = async (post) => {
     try {
-      await axiosInstance.delete(`/winners/${postToDelete.id}`);
-    
-      setPosts(posts.filter(post => post.id !== postToDelete.id));
-      await handleFileDelete(postToDelete.img);
-      setPostToDelete(null);
+      await axiosInstance.delete(`/winners/${post.id}`);
+  
+      setPosts(posts.filter(p => p.id !== post.id));
+      await handleFileDelete(post.img);
+  
+      Swal.fire(
+        'Deleted!',
+        'Your post has been deleted.',
+        'success'
+      );
     } catch (err) {
       console.log(err);
+      Swal.fire(
+        'Error!',
+        'There was an error deleting your post.',
+        'error'
+      );
     }
   };
   const handleFileDelete = async (fileUrl) => {
@@ -107,15 +129,6 @@ const WinnersHome = () => {
                   </Link>
                   <div className="delete-wrapper">
                   <button className="read-more" style={{ fontSize: "1rem" }} onClick={() => handleDeleteConfirmation(post)}>Delete</button>
-                    {postToDelete && postToDelete.id === post.id && (
-                      <div className="confirmation-popup">
-                        <p>Are you sure you want to delete this post?</p>
-                        <div>
-                          <button onClick={handleDelete}>Yes</button>
-                          <button onClick={() => setPostToDelete(null)}>No</button>
-                        </div>
-                      </div>
-                    )}
                   </div>
                   <button
                     className="read-more"

@@ -91,3 +91,20 @@ tr:hover {
 .button:hover {
   background-color: #218838;
 }
+.file-upload{
+  margin-bottom: 5rem;
+  background-color: #218838;
+  padding: 10px;
+  color: white;
+}
+.read-more3{
+  font-size: 1rem;
+  cursor: pointer;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 3px;
+  transition: background-color 0.3s;
+  margin-top: 20px;
+}

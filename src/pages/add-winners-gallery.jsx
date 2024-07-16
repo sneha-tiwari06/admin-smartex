@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import moment from "moment";
 import "../style.scss";
 import axiosInstance from "../utils/axiosInstance";
@@ -9,89 +9,71 @@ const Winners = () => {
   const navigate = useNavigate();
   const baseURL = process.env.REACT_APP_BASE_URL;
 
-  const [title, setTitle] = useState(state?.title || "");
-  const [date, setDate] = useState(
-    state?.date ? moment(state.date).format("YYYY-MM-DD") : ""
-  );
-  const [alt_tag, setAltTag] = useState(state?.alt_tag || "");
-  const [file, setFile] = useState(null);
   const [errors, setErrors] = useState({});
-  const [previewURL, setPreviewURL] = useState(
-    state?.img ? `${baseURL}${state.img}` : null
-  );
+  const [file, setFile] = useState(null);
+  const [previewURL, setPreviewURL] = useState(state?.img ? state.img : null);
+  const { id } = useParams();
+
+  const [draft, setDraft] = useState({
+    title: state?.title || "",
+    date: state?.date ? moment(state.date).format("YYYY-MM-DD") : "",
+    alt_tag: state?.alt_tag || "",
+    img: state?.img || null,
+  });
 
   useEffect(() => {
-    if (state?.img) {
-      setPreviewURL(state.img);
-    }
-  }, [state]);
-
-  const sanitizeFileName = (fileName) => {
-    return fileName.replace(/[^a-zA-Z0-9._-]/g, "_");
-  };
-
-  const upload = async () => {
-    try {
-      const formData = new FormData();
-      const sanitizedFileName = sanitizeFileName(file.name);
-      const renamedFile = new File([file], sanitizedFileName, { type: file.type });
-      formData.append("file", renamedFile);
-      const res = await axiosInstance.post("/upload", formData);
-      return res.data.url; 
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const handleClick = async (e) => {
-    e.preventDefault();
-
-    const errors = {};
-    if (!title.trim()) {
-      errors.title = "Please enter a title.";
-    }
-    if (!date.trim()) {
-      errors.date = "Please enter a date.";
-    }
-    if (!alt_tag.trim()) {
-      errors.alt_tag = "Please select an alternate text.";
-    }
-
-    if (!file && !state?.img) {
-      errors.file = "Please select an image.";
-    } else if (file) {
-      const allowedExtensions = ["jpg", "jpeg", "png", "webp"];
-      const extension = file.name.split(".").pop().toLowerCase();
-      if (!allowedExtensions.includes(extension)) {
-        errors.file = "Only JPG, JPEG, WEBP and PNG formats are allowed.";
+    const fetchDraft = async () => {
+      try {
+        const res = await axiosInstance.get(`/drafts/${id}`);
+        const fetchedDraft = res.data;
+        setDraft({
+          title: fetchedDraft.title,
+          date: fetchedDraft.date ? moment(fetchedDraft.date).format("YYYY-MM-DD") : "",
+          alt_tag: fetchedDraft.alt_tag,
+          img: fetchedDraft.img,
+        });
+        setPreviewURL(fetchedDraft.img);
+      } catch (err) {
+        console.error('Error fetching draft:', err);
       }
-    }
-    setErrors(errors);
+    };
 
-    if (Object.keys(errors).length === 0) {
-      let imgUrl = state?.img || "";
+    if (id) {
+      fetchDraft();
+    }
+  }, [id]);
+
+  const sanitizeFileName = (fileName) => fileName.replace(/[^a-zA-Z0-9._-]/g, "_");
+
+  const saveDraft = async () => {
+    try {
+      let imgUrl = draft.img || "";
       if (file) {
-        imgUrl = await upload();
+        const formData = new FormData();
+        const sanitizedFileName = sanitizeFileName(file.name);
+        const renamedFile = new File([file], sanitizedFileName, { type: file.type });
+        formData.append("file", renamedFile);
+        const res = await axiosInstance.post("/upload", formData);
+        imgUrl = res.data.url;
       }
 
       const payload = {
-        title,
-        date,
-        alt_tag,
+        title: draft.title,
         img: imgUrl,
-        created_at: moment(Date.now()).format("YYYY-MM-DD HH:mm:ss"),
+        date: draft.date,
+        alt_tag: draft.alt_tag,
       };
 
-      try {
-        if (state) {
-          await axiosInstance.put(`/winners/${state.id}`, payload);
-        } else {
-          await axiosInstance.post(`/winners/`, payload);
-        }
-        navigate("/winners-gallery");
-      } catch (err) {
-        console.log(err);
+      if (id) {
+        await axiosInstance.put(`/drafts/${id}`, payload);
+      } else {
+        await axiosInstance.post(`/drafts`, payload);
       }
+
+      alert("Draft saved successfully.");
+      navigate("/winners-gallery");
+    } catch (err) {
+      console.error("Error saving draft:", err);
     }
   };
 
@@ -129,14 +111,13 @@ const Winners = () => {
 
       const allowedTypes = ["image/png", "image/webp", "image/jpeg"];
       if (!allowedTypes.includes(fileType)) {
-        setErrors((prevErrors) => ({
-          ...prevErrors,
+        setErrors({
           file: "Only JPG, JPEG, WEBP, and PNG formats are allowed.",
-        }));
+        });
         setFile(null);
         setPreviewURL(null);
       } else {
-        setErrors((prevErrors) => ({ ...prevErrors, file: null }));
+        setErrors({ file: null });
         setFile(selectedFile);
         const previewReader = new FileReader();
         previewReader.onloadend = () => {
@@ -148,6 +129,97 @@ const Winners = () => {
     reader.readAsArrayBuffer(selectedFile);
   };
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setDraft(prevDraft => ({
+      ...prevDraft,
+      [name]: value
+    }));
+  };
+
+  const handleClick = async (e) => {
+    e.preventDefault();
+
+    const errors = {};
+    if (!draft.title.trim()) {
+      errors.title = "Please enter a title.";
+    }
+    if (!draft.date.trim()) {
+      errors.date = "Please enter a date.";
+    }
+    if (!draft.alt_tag.trim()) {
+      errors.alt_tag = "Please enter an alternate text.";
+    }
+    if (!file && !state?.img) {
+      errors.file = "Please select an image.";
+    } else if (file) {
+      const allowedExtensions = ["jpg", "jpeg", "png", "webp"];
+      const extension = file.name.split(".").pop().toLowerCase();
+      if (!allowedExtensions.includes(extension)) {
+        errors.file = "Only JPG, JPEG, WEBP and PNG formats are allowed.";
+      }
+    }
+    setErrors(errors);
+
+    if (Object.keys(errors).length === 0) {
+      await handlePublish();
+    }
+  };
+
+  const handlePublish = async () => {
+    try {
+      let imgUrl = draft.img || "";
+      if (file) {
+        imgUrl = await upload();
+      }
+  
+      console.log("Publishing with image URL:", imgUrl);
+  
+      const payload = {
+        title: draft.title,
+        date: draft.date,
+        alt_tag: draft.alt_tag,
+        img: imgUrl,
+        created_at: moment(Date.now()).format("YYYY-MM-DD HH:mm:ss"),
+      };
+  
+      if (id) {
+        await axiosInstance.post(`/drafts/${id}/publish`, payload);
+      } else {
+        await axiosInstance.post(`/winners/`, payload);
+      }
+  
+      navigate("/winners-gallery"); // Redirect to winners gallery
+    } catch (err) {
+      console.error("Error publishing:", err);
+      if (err.message === "Please select an image.") {
+        setErrors({ file: err.message });
+      } else {
+        console.error("Unexpected error:", err);
+      }
+    }
+  };
+  
+
+  const upload = async () => {
+    try {
+      if (!file) {
+        throw new Error("Please select an image.");
+      }
+
+      const formData = new FormData();
+      const sanitizedFileName = sanitizeFileName(file.name);
+      const renamedFile = new File([file], sanitizedFileName, { type: file.type });
+      formData.append("file", renamedFile);
+
+      const res = await axiosInstance.post("/upload", formData);
+      return res.data.url;
+    } catch (err) {
+      console.error("Error uploading image:", err);
+      throw err;
+    }
+  };
+
   return (
     <div className="add">
       <div className="content">
@@ -155,26 +227,32 @@ const Winners = () => {
           type="text"
           name="title"
           placeholder="Add Title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          value={draft.title}
+          onChange={handleChange}
         />
-        {errors.title && <span className="error">{errors.title}</span>}
+        {errors.title && (
+          <span className="error">{errors.title}</span>
+        )}
         <input
           type="text"
           name="alt_tag"
           placeholder="Add Alternate Text for image"
-          value={alt_tag}
-          onChange={(e) => setAltTag(e.target.value)}
+          value={draft.alt_tag}
+          onChange={handleChange}
         />
-        {errors.alt_tag && <span className="error">{errors.alt_tag}</span>}
+        {errors.alt_tag && (
+          <span className="error">{errors.alt_tag}</span>
+        )}
         <input
           type="date"
           name="date"
           placeholder="Add Date"
-          value={date}
-          onChange={(e) => setDate(e.target.value)}
+          value={draft.date}
+          onChange={handleChange}
         />
-        {errors.date && <span className="error">{errors.date}</span>}
+        {errors.date && (
+          <span className="error">{errors.date}</span>
+        )}
       </div>
       <div className="item">
         <h1>Publish</h1>
@@ -201,9 +279,11 @@ const Winners = () => {
             style={{ height: "50px", width: "50px" }}
           />
         )}
-        {errors.file && <span className="error">{errors.file}</span>}
+        {errors.file && (
+          <span className="error">{errors.file}</span>
+        )}
         <div className="buttons">
-          <button>Save as a draft</button>
+          <button onClick={saveDraft}>Save as a draft</button>
           <button onClick={handleClick}>Publish</button>
         </div>
       </div>
