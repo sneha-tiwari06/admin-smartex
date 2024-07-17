@@ -97,10 +97,8 @@ const WinnersHome = () => {
           <tbody>
             {posts.map((post, index) => (
               <tr key={index}>
-                <td>
-                  <Link className="link" to={`/post/${post.id}`}>
-                    {index + 1}
-                  </Link>
+                <td className='table-data'>
+                  {index + 1}
                 </td>
                 <td>
                   <Link className="link" to={`/post/${post.id}`}>
