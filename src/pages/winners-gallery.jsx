@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import "./home.css"; 
+import "./home.css";
 import axiosInstance from "../utils/axiosInstance";
 import Swal from 'sweetalert2';
-
 const WinnersHome = () => {
   const [posts, setPosts] = useState([]);
-  // const cat = useLocation().search;
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -19,8 +16,6 @@ const WinnersHome = () => {
     };
     fetchData();
   }, []);
-
-
   const handleDeleteConfirmation = (post) => {
     Swal.fire({
       title: 'Are you sure?',
@@ -36,14 +31,15 @@ const WinnersHome = () => {
       }
     });
   };
-  
+  const getText = (html) => {
+    const doc = new DOMParser().parseFromString(html, "text/html");
+    return doc.body.textContent.slice(0, 30) + "...";
+  };
   const handleDelete = async (post) => {
     try {
       await axiosInstance.delete(`/winners/${post.id}`);
-  
       setPosts(posts.filter(p => p.id !== post.id));
       await handleFileDelete(post.img);
-  
       Swal.fire(
         'Deleted!',
         'Your post has been deleted.',
@@ -60,8 +56,8 @@ const WinnersHome = () => {
   };
   const handleFileDelete = async (fileUrl) => {
     try {
-      await axiosInstance.delete('/delete',{
-        data: { url: fileUrl } 
+      await axiosInstance.delete('/delete', {
+        data: { url: fileUrl }
       });
     } catch (error) {
       console.error('Error deleting file', error);
@@ -69,8 +65,7 @@ const WinnersHome = () => {
   };
   const handleToggleStatus = async (post) => {
     try {
-      const updatedPost = { ...post, active: !post.active }; 
-
+      const updatedPost = { ...post, active: !post.active };
       await axiosInstance.put(`/winners/${post.id}`, { active: updatedPost.active });
       setPosts(posts.map(p => (p.id === post.id ? updatedPost : p)));
     } catch (err) {
@@ -79,13 +74,15 @@ const WinnersHome = () => {
   };
   return (
     <div className="WinnersHome">
-      <h1 style={{justifyContent: "center", textAlign: "center"}}>Winners gallery</h1>
+      <h1 style={{ justifyContent: "center", textAlign: "center" }}>Winners gallery</h1>
       <span className="write">
         <Link className="link" to="/add-winners-gallery">
           <button className="button">Add Post</button>
         </Link>
       </span>
-
+      <span><Link className="link" to="/draft">
+        <button className="button">Drafts</button>
+      </Link></span>
       <div className="posts">
         <table>
           <thead>
@@ -102,47 +99,41 @@ const WinnersHome = () => {
               <tr key={index}>
                 <td>
                   <Link className="link" to={`/post/${post.id}`}>
-                    {index+1}
+                    {index + 1}
                   </Link>
                 </td>
                 <td>
                   <Link className="link" to={`/post/${post.id}`}>
-                    {post.title}
+                    {getText(post.title)}
                   </Link>
                 </td>
                 <td>
                   <img className="img2" src={post.img} alt="" />
-                  
                 </td>
-               
                 <td>
                   <Link className="link" to={`/post/${post.id}`}>
-                    {post.created_at.slice(0,10)}
+                    {post.created_at.slice(0, 10)}
                   </Link>
                 </td>
                 <td className="actions">
-                  {/* <Link className="read-more" to={`/post/${post.id}`}>
-                    View
-                  </Link> */}
                   <Link className="read-more" to={`/add-winners-gallery?edit=2`} state={post}>
                     Edit
                   </Link>
                   <div className="delete-wrapper">
-                  <button className="read-more" style={{ fontSize: "1rem" }} onClick={() => handleDeleteConfirmation(post)}>Delete</button>
+                    <button className="read-more del" style={{ fontSize: "1rem" }} onClick={() => handleDeleteConfirmation(post)}>Delete</button>
                   </div>
                   <button
                     className="read-more"
                     style={{
                       fontSize: "1rem",
                       backgroundColor: post.active ? "green" : "red",
-                      color: "white", 
+                      color: "white",
                     }}
                     onClick={() => handleToggleStatus(post)}
                   >
                     {post.active ? 'Active' : 'Inactive'}
                   </button>
                 </td>
-                
               </tr>
             ))}
           </tbody>
@@ -151,5 +142,4 @@ const WinnersHome = () => {
     </div>
   );
 };
-
 export default WinnersHome;

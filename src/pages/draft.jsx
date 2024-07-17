@@ -59,29 +59,37 @@ const Drafts = () => {
     return (
         <div className="drafts-table">
             <h1 className='draft-heading'>Winners Gallery Draft</h1>
-            <table>
-                <thead>
-                    <tr>
-                        <th className='heading-table'>Title</th>
-                        <th className='heading-table'>Image</th>
-                        <th className='heading-table'>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {drafts.map(draft => (
-                        <tr className='table-data' key={draft.id}>
-                            <td className='table-data'>{draft.title}</td>
-                            <td className='table-data'>
-                                <img src={draft.img} alt="Preview" style={{ height: "100px", width: "200px" }} />
-                            </td>
-                            <td className='table-data'>
-                                <button className='read-more2' onClick={() => handleEdit(draft.id)}>Edit</button>
-                                <button className='read-more2' onClick={() => handleDelete(draft.id)}>Delete</button>
-                            </td>
+            {drafts.length === 0 ? (
+                <p style={{textAlign: "center", marginTop: "50px"}}>No drafts available.</p>
+            ) : (
+                <table>
+                    <thead>
+                        <tr>
+                            <th className='heading-table'>ID</th>
+                            <th className='heading-table'>Title</th>
+                            <th className='heading-table'>Image</th>
+                            <th className='heading-table'>Actions</th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {drafts.map((draft, index) => (
+                            <tr key={index}>
+                                <td className='table-data'>
+                                    {index + 1}
+                                </td>
+                                <td className='table-data'>{draft.title}</td>
+                                <td className='table-data'>
+                                    <img src={draft.img} alt="Preview" className='img2' />
+                                </td>
+                                <td className='table-data'>
+                                    <button className='read-more2' onClick={() => handleEdit(draft.id)}>Edit</button>
+                                    <button className='read-more2 del' onClick={() => handleDelete(draft.id)}>Delete</button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            )}
         </div>
     );
 };

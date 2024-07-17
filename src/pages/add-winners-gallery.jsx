@@ -7,18 +7,17 @@ import axiosInstance from "../utils/axiosInstance";
 const Winners = () => {
   const state = useLocation().state;
   const navigate = useNavigate();
-  // const baseURL = process.env.REACT_APP_BASE_URL;
+  const { id } = useParams();
 
   const [errors, setErrors] = useState({});
   const [file, setFile] = useState(null);
   const [previewURL, setPreviewURL] = useState(state?.img ? state.img : null);
-  const { id } = useParams();
 
   const [draft, setDraft] = useState({
     title: state?.title || "",
     date: state?.date ? moment(state.date).format("YYYY-MM-DD") : "",
     alt_tag: state?.alt_tag || "",
-    img: state?.img || null,
+    img: state?.img || "",
   });
 
   useEffect(() => {
@@ -71,7 +70,7 @@ const Winners = () => {
       }
 
       alert("Draft saved successfully.");
-      navigate("/winners-gallery");
+      navigate("/draft");
     } catch (err) {
       console.error("Error saving draft:", err);
     }
@@ -172,8 +171,7 @@ const Winners = () => {
       if (file) {
         imgUrl = await upload();
       }
-  
-  
+
       const payload = {
         title: draft.title,
         date: draft.date,
@@ -181,13 +179,13 @@ const Winners = () => {
         img: imgUrl,
         created_at: moment(Date.now()).format("YYYY-MM-DD HH:mm:ss"),
       };
-  
-      if (id) {
-        await axiosInstance.post(`/drafts/${id}/publish`, payload);
+
+      if (state) {
+        await axiosInstance.put(`/winners/${state.id}`, payload);
       } else {
         await axiosInstance.post(`/winners/`, payload);
       }
-  
+
       navigate("/winners-gallery"); 
     } catch (err) {
       console.error("Error publishing:", err);
@@ -198,7 +196,6 @@ const Winners = () => {
       }
     }
   };
-  
 
   const upload = async () => {
     try {

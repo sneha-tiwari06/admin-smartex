@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import "./home.css"; // Import CSS file for styling
+import "./home.css"; 
 import axiosInstance from "../utils/axiosInstance";
 
 const PartnersHome = () => {
@@ -95,7 +95,7 @@ const PartnersHome = () => {
                     Edit
                   </Link>
                   <div className="delete-wrapper">
-                    <button className="read-more" style={{ fontSize: "1rem" }} onClick={() => handleDeleteConfirmation(post)}>Delete</button>
+                    <button className="read-more del" style={{ fontSize: "1rem" }} onClick={() => handleDeleteConfirmation(post)}>Delete</button>
                     {postToDelete && postToDelete.id === post.id && (
                       <div className="confirmation-popup">
                         <p>Are you sure you want to delete this post?</p>

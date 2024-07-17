@@ -40,8 +40,7 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/" element={<Login />} />
             <Route path="/blogs" element={<Layout><Home /></Layout>} />
-            {/* <Route path="/post/:id" element={<Layout><Single /></Layout>} /> */}
-            <Route path="/edit-draft/:id" element={<Layout><WinnersHome /></Layout>} />       
+            <Route path="/edit-draft/:id" element={<Layout><WinnersHome /></Layout>} />
             <Route path="/blogs" element={<Layout><Home /></Layout>} />
             <Route path="/add-blogs" element={<Layout><Write /></Layout>} />
             <Route path="/add-star-speakers" element={<Layout><StarHome /></Layout>} />

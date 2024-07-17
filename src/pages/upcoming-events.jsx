@@ -108,7 +108,7 @@ const UpcomingHome = () => {
                     Edit
                   </Link>
                   <div className="delete-wrapper">
-                  <button className="read-more" style={{ fontSize: "1rem" }}onClick={() => handleDeleteConfirmation(post)}>Delete</button>
+                  <button className="read-more del" style={{ fontSize: "1rem" }}onClick={() => handleDeleteConfirmation(post)}>Delete</button>
                     {postToDelete && postToDelete.id === post.id && (
                       <div className="confirmation-popup">
                         <p>Are you sure you want to delete this post?</p>

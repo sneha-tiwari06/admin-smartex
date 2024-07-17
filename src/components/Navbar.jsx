@@ -60,9 +60,9 @@ const Navbar = () => {
           <Link className="link" to="/add-partners">
             <h6>Partners</h6>
           </Link>
-          <Link className="link" to="/draft">
+          {/* <Link className="link" to="/draft">
             <h6>Drafts</h6>
-          </Link>
+          </Link> */}
 
           <span>{currentUser?.username}</span>
           {currentUser ? (

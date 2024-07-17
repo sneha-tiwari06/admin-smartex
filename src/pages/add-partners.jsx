@@ -5,7 +5,6 @@ import Swal from 'sweetalert2';
 import axiosInstance from "../utils/axiosInstance";
 
 const Partners = () => {
-  // const navigate = useNavigate();
   const location = useLocation();
   const existingData = location.state || {};
   const baseURL = process.env.REACT_APP_API_URL;
@@ -49,7 +48,6 @@ const Partners = () => {
   
       sanitizedFiles.forEach(file => formData.append("files", file));
       const res = await axiosInstance.post("/multiupload", formData);
-      // console.log("File URLs response:", res.data.fileUrls); 
       return res.data.fileUrls;
     } catch (err) {
       console.log(err);
@@ -97,7 +95,7 @@ const Partners = () => {
         }
       } catch (err) {
         console.log(err);
-        // Handle error
+      
       }
     }
   };
@@ -106,7 +104,6 @@ const Partners = () => {
   
   const handleFileChange = (e) => {
     const selectedFiles = Array.from(e.target.files);
-    // console.log("Selected files:", selectedFiles); 
   
     if (!selectedFiles.length) return;
   
@@ -121,7 +118,6 @@ const Partners = () => {
     });
   
     setFiles(sanitizedFiles);
-    // console.log("Sanitized files set:", sanitizedFiles);
   
     const newPreviewURLs = selectedFiles.map(file => URL.createObjectURL(file));
     setPreviewURLs(newPreviewURLs);
@@ -134,7 +130,6 @@ const Partners = () => {
       setPosts(posts.map(p => (p.id === post.id ? updatedPost : p)));
     } catch (err) {
       console.error('Error toggling status', err);
-      // Handle error
     }
   };
 
@@ -164,7 +159,6 @@ const Partners = () => {
       });
     } catch (error) {
       console.error('Error deleting file', error);
-      // Handle error
     }
   };
 
@@ -190,7 +184,6 @@ const Partners = () => {
         />
         {errors.files && <span className="error">{errors.files}</span>}
 
-        {/* Display existing image previews */}
         {isEditMode && existingImageUrls.length > 0 && (
           <div className="existing-images">
             <h3>Existing Images:</h3>
@@ -207,7 +200,6 @@ const Partners = () => {
           </div>
         )}
 
-        {/* Display new image previews */}
         {previewURLs.length > 0 && (
           <div className="new-images">
             <h3>New Images:</h3>
@@ -233,11 +225,7 @@ const Partners = () => {
 
       <div className="UpcomingHome">
         <h1 style={{ justifyContent: "center", textAlign: "center" }}>Partners</h1>
-        <span className="write">
-          <Link className="link" to="/add-partners">
-            <button className="button">Add Partners</button>
-          </Link>
-        </span>
+      
 
         <div className="posts">
           <table>
@@ -257,18 +245,21 @@ const Partners = () => {
                     </Link>
                   </td>
                   <td>
-                    {/* Assuming post.image_url is correct */}
                     <img className="img2" src={post.image_url} alt="" />
                   </td>
                   <td className="actions">
-                    <button
-                      className="read-more"
-                      style={{ fontSize: "1rem" }}
-                      onClick={() => handleToggleStatus(post)}
-                    >
-                      {post.active ? 'Inactive' : 'Active'}
-                    </button>
-                    <button className="read-more" onClick={() => handleDeleteConfirmation(post)} style={{ fontSize: "1rem" }}>Delete</button>
+                  <button
+                    className="read-more"
+                    style={{
+                      fontSize: "1rem",
+                      backgroundColor: post.active ? "green" : "red",
+                      color: "white",  
+                    }}
+                    onClick={() => handleToggleStatus(post)}
+                  >
+                    {post.active ? 'Active' : 'Inactive'}
+                  </button>
+                    <button className="read-more del" onClick={() => handleDeleteConfirmation(post)} style={{ fontSize: "1rem" }}>Delete</button>
                   </td>
                 </tr>
               ))}

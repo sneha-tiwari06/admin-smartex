@@ -101,7 +101,7 @@ const EventHome = () => {
                     Edit
                   </Link>
                   <button
-                    className="read-more"
+                    className="read-more del"
                     style={{ fontSize: "1rem" , marginLeft: "1rem"}}
                     onClick={() => handleDeleteConfirmation(post)}
                   >
